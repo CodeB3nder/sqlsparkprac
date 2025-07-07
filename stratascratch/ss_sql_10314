@@ -1,0 +1,12 @@
+with cte as (
+SELECT
+  TO_CHAR(created_at, 'YYYY-MM') AS year_month,
+  SUM(purchase_amt) as rev
+FROM amazon_purchases
+WHERE purchase_amt >= 0
+GROUP BY TO_CHAR(created_at, 'YYYY-MM')
+ORDER BY year_month)
+
+select *,
+AVG(rev) OVER (ORDER BY year_month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) as rolling_sum_3_months
+from cte
